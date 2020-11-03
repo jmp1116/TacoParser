@@ -14,8 +14,10 @@ namespace LoggingKata
         {
             // TODO:  Find the two Taco Bells that are the furthest from one another.
             // HINT:  You'll need two nested forloops ---------------------------
+            
 
             logger.LogInfo("Log initialized");
+            
 
             // use File.ReadAllLines(path) to grab all the lines from your csv file
             // Log and error if you get 0 lines and a warning if you get 1 line
@@ -29,6 +31,8 @@ namespace LoggingKata
             // Grab an IEnumerable of locations using the Select command: var locations = lines.Select(parser.Parse);
             var locations = lines.Select(parser.Parse).ToArray();
 
+            ITrackable tacobell1 = new TacoBell();
+            ITrackable tacobell2 = new TacoBell();
             // DON'T FORGET TO LOG YOUR STEPS
 
             // Now that your Parse method is completed, START BELOW ----------
@@ -40,7 +44,32 @@ namespace LoggingKata
 
             //HINT NESTED LOOPS SECTION---------------------
             // Do a loop for your locations to grab each location as the origin (perhaps: `locA`)
+            double distanceBetween = 0;
+            double longestDistance = 0;
+            foreach (var locA in locations)
+            {
+                GeoCoordinate pinA = new GeoCoordinate();
+                pinA.Latitude = locA.Location.Latitude;
+                pinA.Longitude = locA.Location.Longitude;
 
+                foreach (var locB in locations)
+                {
+                    GeoCoordinate pinB = new GeoCoordinate();
+                    pinB.Longitude = locB.Location.Longitude;
+                    pinB.Latitude = locB.Location.Latitude;
+                    distanceBetween = pinA.GetDistanceTo(pinB);
+                    if (distanceBetween > longestDistance)
+                    {
+                        longestDistance = distanceBetween;
+                        tacobell1 = locA;
+                        tacobell2 = locB;
+                    }
+                }
+
+                    
+            }
+            Console.WriteLine($"Longest distance is: {longestDistance}.");
+            Console.WriteLine($"The two TacoBells are {tacobell1.Name} and {tacobell2.Name}.");
             // Create a new corA Coordinate with your locA's lat and long
 
             // Now, do another loop on the locations with the scope of your first loop, so you can grab the "destination" location (perhaps: `locB`)
@@ -53,7 +82,7 @@ namespace LoggingKata
             // Once you've looped through everything, you've found the two Taco Bells farthest away from each other.
 
 
-            
+
         }
     }
 }
